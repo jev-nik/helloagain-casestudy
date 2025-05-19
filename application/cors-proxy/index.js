@@ -13,6 +13,11 @@ app.use((req, res, next) => {
   next();
 });
 
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
+
 // Proxy all requests to the target URL
 app.all('/*', (req, res) => {
   const targetUrl = req.url.slice(1); // Remove leading slash

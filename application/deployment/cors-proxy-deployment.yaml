@@ -1,40 +1,43 @@
 apiVersion: apps/v1
-     kind: Deployment
-     metadata:
-       name: cors-proxy
-       namespace: default
-     spec:
-       replicas: 2
-       selector:
-         matchLabels:
-           app: cors-proxy
-       template:
-         metadata:
-           labels:
-             app: cors-proxy
-         spec:
-           containers:
-           - name: cors-proxy
-             image: ${AWS_ACCOUNT_ID}.dkr.ecr.eu-central-1.amazonaws.com/dev-cors-proxy:latest
-             ports:
-             - containerPort: 8080
-             resources:
-               requests:
-                 cpu: "100m"
-                 memory: "128Mi"
-               limits:
-                 cpu: "500m"
-                 memory: "512Mi"
-     ---
-     apiVersion: v1
-     kind: Service
-     metadata:
-       name: cors-proxy-service
-       namespace: default
-     spec:
-       selector:
-         app: cors-proxy
-       ports:
-       - port: 80
-         targetPort: 8080
-       type: ClusterIP
+kind: Deployment
+metadata:
+  name: cors-proxy
+  namespace: default
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: cors-proxy
+  template:
+    metadata:
+      labels:
+        app: cors-proxy
+    spec:
+      containers:
+      - name: cors-proxy
+        image: ${AWS_ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com/dev-cors-proxy:latest
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cors-proxy-service
+  namespace: default
+  annotations:
+    alb.ingress.kubernetes.io/backend-security-group: ${TARGET_GROUP}
+    alb.ingress.kubernetes.io/target-group-binding: cors-proxy-tgb
+spec:
+  selector:
+    app: cors-proxy
+  ports:
+  - port: 80
+    targetPort: 8080
+  type: ClusterIP

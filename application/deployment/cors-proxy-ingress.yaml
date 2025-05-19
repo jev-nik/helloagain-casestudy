@@ -4,10 +4,12 @@ metadata:
   name: cors-proxy-ingress
   namespace: default
   annotations:
-    kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/security-groups: ${SECURITY_GROUP}
+    alb.ingress.kubernetes.io/subnets: ${SUBNET_1},${SUBNET_2}
 spec:
+  ingressClassName: alb
   rules:
   - http:
       paths:

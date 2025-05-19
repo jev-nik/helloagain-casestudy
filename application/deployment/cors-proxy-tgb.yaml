@@ -1,0 +1,11 @@
+apiVersion: elbv2.k8s.aws/v1beta1
+kind: TargetGroupBinding
+metadata:
+  name: cors-proxy-tgb
+  namespace: default
+spec:
+  serviceRef:
+    name: cors-proxy-service
+    port: 80
+  targetType: ip
+  targetGroupARN: arn:aws:elasticloadbalancing:${REGION}:${ACCOUNT_ID}:targetgroup/${TARGET_GROUP}
