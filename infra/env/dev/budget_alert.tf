@@ -10,6 +10,6 @@ resource "aws_budgets_budget" "monthly_cost_limit" {
     threshold                  = 90
     threshold_type             = "PERCENTAGE"
     notification_type          = "ACTUAL"
-    subscriber_email_addresses = ["nikolaev.e@outlook.de"] # Replace with your email
+    subscriber_email_addresses = [""] # Replace with your email
   }
 }
